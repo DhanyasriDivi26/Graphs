@@ -1,0 +1,45 @@
+'''Given an undirected graph G, check whether it is bipartite. Recall that a graph is bipartite if its vertices
+ can be divided into two independent sets, U and V, such that no edge connects vertices of the same set.'''
+
+from collections import defaultdict
+
+class FindBipartite:
+    def __init__(self):
+        self.adj_matrix = defaultdict(list)
+
+    def dfs(self, i, col, color):
+
+        color[i] = col
+
+        for neighbor in self.adj_matrix[i]:
+            if color[neighbor] == -1:
+
+                if not self.dfs(neighbor, 1 - col, color):
+                    return False
+
+            elif color[neighbor] == col:
+                return False
+
+        return True
+
+    def is_bipartite(self, graph):
+
+        for edge in graph:
+            self.adj_matrix[edge[0]].append(edge[1])
+            self.adj_matrix[edge[1]].append(edge[0])
+
+
+        color = [-1] * len(self.adj_matrix)
+
+        for node in self.adj_matrix:
+            if color[node] == -1:
+
+                if not self.dfs(node, 0, color):
+                    return False
+        return True
+
+
+G = [(0, 1), (1, 2), (2, 3), (0, 4), (4, 5), (5, 3)]
+
+bipartite_checker = FindBipartite()
+print(bipartite_checker.is_bipartite(G))
